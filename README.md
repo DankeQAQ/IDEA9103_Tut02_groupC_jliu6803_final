@@ -1,4 +1,5 @@
 # Audio-Reactive Circular Pattern Visualization  
+
 ---
 
 ## How to Interact with the Work  
@@ -17,7 +18,6 @@ I started with our group’s original p5.js code, which generates a grid of mult
 My focus was on **integrating sound responsiveness** directly into these primary circles, so that the core visual identity is preserved while becoming interactive with music.  
 Unlike simply adding unrelated effects, my approach embeds audio reactivity into the scale transformation of each main ring, making the entire composition pulse together with the beat.
 
-
 ---
 
 ## What Drives My Code: Audio, Interaction, Perlin Noise or Time?  
@@ -26,7 +26,6 @@ My code is **driven by audio**, specifically the real-time amplitude (loudness) 
 - I used the `p5.Amplitude` analyzer to measure the music’s volume at each animation frame.
 - There is no use of Perlin noise, interaction, or time-based autonomous animation in this version.
 - The visual effect is purely responsive to the audio’s volume.
-
 
 ---
 
@@ -37,15 +36,14 @@ The **unique animated property** in my code is the scaling (size) of the main co
 - All inner details, colors, and patterns maintain their relative proportions due to scaling.
 - Compared to other group members who might animate color, opacity, rotation, or selective segment display, my work is distinct in that **the entire primary structure breathes as one** in response to music.
 
-
 ---
+
 ## Inspiration for Making the Animation Dynamic  
 
 My inspiration comes from several places:
 - The Week 12 p5.js tutorial on sound-reactive graphics, where ellipses change size with music amplitude.
 - Audio-visual performances by Tarik Barri, whose abstract visuals closely follow live audio.
 - These references led me to focus on amplitude-based global scaling, making the entire pattern pulse in time with the music.
-
 
 ---
 
