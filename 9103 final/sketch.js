@@ -7,6 +7,7 @@ let fillColors = ['#FABC08','#4CAECD','#06978A','#D70E08'];
 let canvas;
 let baseSize = 520;
 
+// set outer ellipses variables
 let ellipses = [
     { x: 286.8, y: 73.4, angle: 0, fillColor: null},
     { x: 301.1, y: 40.6, angle: 0, fillColor: null},
@@ -124,6 +125,7 @@ function preload() {
   song = loadSound('assets/song.mp3');
 }
 
+// draw function for ellipse
 function fillEllipse(ellipsesList) {
     let count = 0;
     for (let i = 0; i < ellipsesList.length; i++) {
@@ -135,6 +137,7 @@ function fillEllipse(ellipsesList) {
     }
 }
 
+// set outer small circle variables
 let circles = [
     { x: 12.0, y: 9.0, r: 6.0},
     { x: 12.0, y: 9.0, r: 6.0},
@@ -312,12 +315,14 @@ let circles = [
     { x: 232.5, y: 519.5, r: 4.5},
 ];
 
-function drawCircles(circleList, scaleFactor) {
+// draw function for outer circle
+function drawCircles(circleList) {
     stroke("#000000");
     strokeWeight(4);
+
     for (let c of circleList) {
         fill('#FFFFFF');
-        ellipse(c.x, c.y, c.r * 2 * scaleFactor, c.r * 2 * scaleFactor);
+        ellipse(c.x, c.y, c.r * 2, c.r * 2);
     }
 }
 
@@ -354,7 +359,8 @@ function setup() {
                 color('#030F7B')
             ],
             hasCurve: true,
-            angle: PI / 4
+            curveFlipped: true,
+            angle: PI / 2
         },{ //number 2
             x: 220,
             y: 35,
@@ -366,7 +372,8 @@ function setup() {
                 color('#E81207')
             ],
             hasCurve: false,
-            angle: PI / 3
+            angle: PI / 3,
+            hasDiagonal: true
         },{ //number 3
             x: 370,
             y: 0,
@@ -378,7 +385,8 @@ function setup() {
                 color('#F3352F')
             ],
             hasCurve: true,
-            angle: PI / 3
+            curveFlipped: true,
+            angle: 2* PI / 3
         },{ //number 7
             x: 480,
             y: 100,
@@ -486,7 +494,8 @@ function setup() {
                 color('#F7190C')
             ],
             hasCurve: true,
-            angle: PI / 6
+            curveFlipped: true,
+            angle: PI / 1.1
         },{ //number 13
             x: 220,
             y: 440,
@@ -498,7 +507,9 @@ function setup() {
                 color('#F66CD1')
             ],
             hasCurve: false,
-            angle: PI / 6
+            angle: PI / 6,
+            hasDiagonal: true
+
         },{ //number 14
             x: 375,
             y: 410,
@@ -556,32 +567,38 @@ function windowResized() {
 }
 
 function draw() {
-    // Only animate rings when song is playing
+    colorMode(RGB, 255, 255, 255);
+    // --- 背景色 ---
+    background(1, 89, 125);
+
+    // --- 音量驱动缩放参数 ---
     let scale = 1;
     if (song && song.isPlaying()) {
-        // Calculate scale based on current amplitude level
+        // 这里 amp.getLevel() 返回 [0, 1] 的音量 RMS
         scale = 1 + amp.getLevel() * 1.5;
     }
-    background(1, 89, 125);
-    // Pass scale to each main circle
+
+    // --- 环形图案，传入缩放参数 ---
     for (let r of rings) {
         r.display(scale);
     }
 
+    // --- （如果 fillEllipse 逻辑需要保留就调用，否则可以省略）---
     fillEllipse(ellipses);
-    colorMode(HSB, 360, 100, 100); // Drawing colors with HSB mode
+
+    // --- 音量驱动下的椭圆动态着色 ---
+    colorMode(HSB, 360, 100, 100);
     for (let i = 0; i < ellipses.length; i++) {
         let e = ellipses[i];
         stroke("#F28633");
         strokeWeight(1);
-        
+
         if (song && song.isPlaying()) {
-        // 音量决定色相，每个椭圆再加个偏移
-        let hue = (180 + amp.getLevel() * 300 + i * 12) % 360;
-        fill(hue, 90, 100);
-    } else {
-        fill(e.fillColor || "white"); // 没有音乐时默认色
-    }
+            let hue = (180 + amp.getLevel() * 300 + i * 12) % 360;
+            fill(hue, 90, 100);
+        } else {
+            fill(e.fillColor || "white");
+        }
 
         push();
         translate(e.x, e.y);
@@ -590,6 +607,7 @@ function draw() {
         pop();
     }
 
+    drawCircles(circles);
 }
 
 class RingPattern {
@@ -741,4 +759,17 @@ class RingPattern {
         );
         pop();
     }
+    
+    drawDiagonalLine() {
+        if (!this.hasDiagonal) return;
+
+        push();
+        translate(this.x, this.y);
+        rotate(PI / 1.2);
+        stroke('#FF0000');
+        strokeWeight(2);
+        line(-this.r3, 0, this.r3, 0);
+        pop();
+    }
+
 }
