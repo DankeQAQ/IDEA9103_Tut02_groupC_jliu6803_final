@@ -545,9 +545,15 @@ function setup() {
     for (let config of ringConfigs) {
         rings.push(new RingPattern(config));
     }
+    windowResized()
 
 }
-
+function windowResized() {
+    let scaleFactor = min(windowWidth, windowHeight) / baseSize;
+    canvas.style('transform', `scale(${scaleFactor})`);
+    canvas.style('transform-origin', 'top left');
+    canvas.position((windowWidth - baseSize * scaleFactor) / 2, (windowHeight - baseSize * scaleFactor) / 2);
+}
 
 function draw() {
     // Only animate rings when song is playing
@@ -563,11 +569,20 @@ function draw() {
     }
 
     fillEllipse(ellipses);
+    colorMode(HSB, 360, 100, 100); // Drawing colors with HSB mode
     for (let i = 0; i < ellipses.length; i++) {
         let e = ellipses[i];
         stroke("#F28633");
         strokeWeight(1);
-        fill(e.fillColor || "white");
+        
+        if (song && song.isPlaying()) {
+        // 音量决定色相，每个椭圆再加个偏移
+        let hue = (180 + amp.getLevel() * 300 + i * 12) % 360;
+        fill(hue, 90, 100);
+    } else {
+        fill(e.fillColor || "white"); // 没有音乐时默认色
+    }
+
         push();
         translate(e.x, e.y);
         rotate(radians(e.angle));
@@ -575,12 +590,6 @@ function draw() {
         pop();
     }
 
-}
-function windowResized() {
-    let scaleFactor = min(windowWidth, windowHeight) / baseSize;
-    canvas.style('transform', `scale(${scaleFactor})`);
-    canvas.style('transform-origin', 'top left');
-    canvas.position((windowWidth - baseSize * scaleFactor) / 2, (windowHeight - baseSize * scaleFactor) / 2);
 }
 
 class RingPattern {
