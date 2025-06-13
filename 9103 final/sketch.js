@@ -7,7 +7,7 @@ let fillColors = ['#FABC08','#4CAECD','#06978A','#D70E08'];
 let canvas;
 let baseSize = 520;
 let songTitleP;
-let currentSongName = "Default Demo"; 
+let currentSongName = "APT.mp3"; 
 
 // set outer ellipses variables
 let ellipses = [
