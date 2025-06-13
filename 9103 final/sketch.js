@@ -4,6 +4,8 @@ let rings = [];
 let ringConfigs = [];
 let amplitude;
 let fillColors = ['#FABC08','#4CAECD','#06978A','#D70E08'];
+let canvas;
+let baseSize = 520;
 
 let ellipses = [
     { x: 286.8, y: 73.4, angle: 0, fillColor: null},
@@ -320,18 +322,17 @@ function drawCircles(circleList, scaleFactor) {
 }
 
 function setup() {
-    createCanvas(520, 520);
+    canvas = createCanvas(baseSize, baseSize);
+    canvas.parent("canvas-container");
+    windowResized();
     angleMode(RADIANS);
 
-    // Initialize amplitude analyzer and set the input to the song
     amp = new p5.Amplitude();
     amp.setInput(song);
 
-    // Initialize FFT analyzer and set the input to the song
     fft = new p5.FFT(0.8, 128);
     fft.setInput(song);
 
-    // Create play/pause button and set click handler
     playButton = createButton('Play/Pause');
     playButton.position(10, 10);
     playButton.mousePressed(() => {
@@ -574,6 +575,12 @@ function draw() {
         pop();
     }
 
+}
+function windowResized() {
+    let scaleFactor = min(windowWidth, windowHeight) / baseSize;
+    canvas.style('transform', `scale(${scaleFactor})`);
+    canvas.style('transform-origin', 'top left');
+    canvas.position((windowWidth - baseSize * scaleFactor) / 2, (windowHeight - baseSize * scaleFactor) / 2);
 }
 
 class RingPattern {

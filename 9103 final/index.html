@@ -3,11 +3,48 @@
 <head>
     <meta charset="UTF-8" />
     <title>p5.js Sketch</title>
+    <!-- 
+      Basic page styles for centering the canvas, responsiveness, and removing scrollbars
+    -->
+    <style>
+        html, body {
+            margin: 0;          /* Remove default margin */
+            padding: 0;         /* Remove default padding */
+            overflow: hidden;   /* Hide scrollbars */
+            width: 100vw;       /* Full viewport width */
+            height: 100vh;      /* Full viewport height */
+        }
+        #canvas-container {
+            width: 100vw;       /* Full width */
+            height: 100vh;      /* Full height */
+            display: flex;      /* Flex layout */
+            align-items: center;    /* Vertically center */
+            justify-content: center;/* Horizontally center */
+        }
+        canvas {
+            display: block;         /* Remove inline spacing */
+            max-width: 100%;        /* Max width 100% */
+            max-height: 100%;       /* Max height 100% */
+        }
+    </style>
+    <!-- 
+      Load the main p5.js library 
+    -->
     <script src="libraries/p5.js"></script>
-    <!-- Load the p5.js sound library (required for sound features) -->
+    <!-- 
+      Load the p5.js sound library (for audio features)
+    -->
     <script src="libraries/p5.sound.min.js"></script>
+    <!-- 
+      Load your main sketch code 
+    -->
     <script src="sketch.js"></script>
 </head>
+
 <body>
+    <!-- 
+      Canvas container; the p5.js canvas will be inserted here
+    -->
+    <div id="canvas-container"></div>
 </body>
 </html>
