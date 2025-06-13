@@ -6,6 +6,8 @@ let amplitude;
 let fillColors = ['#FABC08','#4CAECD','#06978A','#D70E08'];
 let canvas;
 let baseSize = 520;
+let songTitleP;
+let currentSongName = "Default Demo"; 
 
 // set outer ellipses variables
 let ellipses = [
@@ -346,7 +348,45 @@ function setup() {
         } else {
             song.loop();
         }
+
+    // Song title display
+    songTitleP = createP(currentSongName);
+    songTitleP.position(10, 45);
+    songTitleP.style('color', '#FFF');
+    songTitleP.style('font-size', '16px');
+    songTitleP.style('margin', '0');
+    songTitleP.style('background', 'rgba(20,40,50,0.5)');
+    songTitleP.style('padding', '2px 10px');
+    songTitleP.style('border-radius', '6px');
+
+    // Add file input for user to upload their own music
+    let fileInput = createFileInput(handleFile);
+    fileInput.position(120, 10);
+    fileInput.attribute('accept', '.mp3,.wav,.ogg');
+    fileInput.elt.title = "Choose an audio file from your computer";
+    
     });
+
+function handleFile(file) {
+  // Only proceed if the file is an audio file
+  if (file.type === 'audio') {
+    if (song && song.isPlaying()) {
+      song.stop(); // Stop current song if playing
+    }
+    // Load the uploaded sound and set it as the new song
+    loadSound(file.data, (loadedSound) => {
+      song = loadedSound;
+      amp.setInput(song);
+      fft.setInput(song);
+      // Optionally start playing immediately:
+      song.play();
+      currentSongName = file.name || "User Song";
+      songTitleP.html(currentSongName);
+    });
+  } else {
+    alert('Please upload an audio file (.mp3, .wav, .ogg)');
+  }
+}
 
     ringConfigs = [
         { //number 1
@@ -568,25 +608,22 @@ function windowResized() {
 
 function draw() {
     colorMode(RGB, 255, 255, 255);
-    // --- 背景色 ---
     background(1, 89, 125);
 
-    // --- 音量驱动缩放参数 ---
+    //Volume driver scaling parameters
     let scale = 1;
     if (song && song.isPlaying()) {
-        // 这里 amp.getLevel() 返回 [0, 1] 的音量 RMS
         scale = 1 + amp.getLevel() * 1.5;
     }
 
-    // --- 环形图案，传入缩放参数 ---
+    //Circular pattern, input zoom parameter
     for (let r of rings) {
         r.display(scale);
     }
 
-    // --- （如果 fillEllipse 逻辑需要保留就调用，否则可以省略）---
     fillEllipse(ellipses);
 
-    // --- 音量驱动下的椭圆动态着色 ---
+    // Volume-driven elliptical dynamic shading
     colorMode(HSB, 360, 100, 100);
     for (let i = 0; i < ellipses.length; i++) {
         let e = ellipses[i];
